@@ -9,5 +9,5 @@ app.get('/api', (_, res: Response) => {
 });
 
 app.listen(PORT, () => {
-  console.log(`Listening on http://localhost:${PORT}`);
+  console.log(`Listening on http://localhost:${PORT}/api`);
 });
