@@ -1,13 +1,12 @@
-import express, { Response } from 'express';
+import express from 'express';
 import 'dotenv/config';
+import route from './routes/todos.routes';
 
 const PORT = process.env.PORT ?? 3000;
 const app = express();
 
-app.get('/api', (_, res: Response) => {
-  res.json({ message: "I'm alive!" });
-});
+app.use('/api/todos', route);
 
 app.listen(PORT, () => {
-  console.log(`Listening on http://localhost:${PORT}/api`);
+  console.log(`Listening on http://localhost:${PORT}/api/todos`);
 });
