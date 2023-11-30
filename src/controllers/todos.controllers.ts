@@ -13,15 +13,19 @@ const getTodos = (_: Request, res: Response) => {
 };
 
 const getOneTodo = (req: Request, res: Response) => {
-  TodoModels.selectOneTodo(req.params.id).then((result) => {
-    if (result.length === 0) {
-      res
-        .status(404)
-        .json({ message: `There's no todo with ID (${req.params.id})` });
-    } else {
-      res.json(result);
-    }
-  });
+  TodoModels.selectOneTodo(req.params.id)
+    .then((result) => {
+      if (result.length === 0) {
+        res
+          .status(404)
+          .json({ message: `There's no todo with ID (${req.params.id}).` });
+      } else {
+        res.json(result);
+      }
+    })
+    .catch((err) => {
+      throw err;
+    });
 };
 
 const createTodo = (req: Request, res: Response) => {
@@ -45,6 +49,28 @@ const updateTodo = (req: Request, res: Response) => {
         res.json({
           message: `A todo with ID (${req.params.id}) has been updated.`,
         });
+      } else {
+        res.status(404).json({
+          message: `There's no todo with ID (${req.params.id}).`,
+        });
+      }
+    })
+    .catch((err) => {
+      throw err;
+    });
+};
+
+const deleteTodo = (req: Request, res: Response) => {
+  TodoModels.deleteTodo(req.params.id as Todo['id'])
+    .then(({ affectedRows }) => {
+      if (affectedRows === 1) {
+        res.json({
+          message: `A todo with ID (${req.params.id}) has been deleted.`,
+        });
+      } else {
+        res.status(404).json({
+          message: `There's no todo with ID (${req.params.id}).`,
+        });
       }
     })
     .catch((err) => {
@@ -57,4 +83,5 @@ export const TodoController = {
   getOneTodo,
   createTodo,
   updateTodo,
+  deleteTodo,
 };

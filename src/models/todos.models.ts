@@ -27,9 +27,17 @@ const insertTodo = async ({ title, description }: Todo) => {
 
 const updateTodo = async ({ title, description }: Todo, id: Todo['id']) => {
   const [rows] = await pool.execute(
-    'UPDATE `todos` SET `title` = ?, `description` = ? WHERE id = ?;',
+    'UPDATE `todos` SET `title` = ?, `description` = ? WHERE `id` = ?;',
     [title, description, id]
   );
+
+  return rows as ResultSetHeader;
+};
+
+const deleteTodo = async (id: Todo['id']) => {
+  const [rows] = await pool.execute('DELETE FROM `todos` WHERE `id` = ?;', [
+    id,
+  ]);
 
   return rows as ResultSetHeader;
 };
@@ -39,4 +47,5 @@ export const TodoModels = {
   selectOneTodo,
   insertTodo,
   updateTodo,
+  deleteTodo,
 };
