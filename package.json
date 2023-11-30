@@ -4,7 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "dev": "npx tsc && concurrently \"npx tsc -w\" \"node --watch dist/index.js\""
+    "dev": "npx tsc && concurrently \"npx tsc -w\" \"node dist/index.js\"",
+    "start": "node --watch dist/index.js"
   },
   "keywords": [],
   "author": "",
