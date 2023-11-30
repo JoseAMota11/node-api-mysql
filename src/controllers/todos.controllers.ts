@@ -1,7 +1,8 @@
 import type { Request, Response } from 'express';
 import { TodoModels } from '../models/todos.models';
+import { Todo } from '../types/todo';
 
-const getTodos = (req: Request, res: Response) => {
+const getTodos = (_: Request, res: Response) => {
   TodoModels.selectTodos()
     .then((result) => {
       res.json(result);
@@ -12,9 +13,25 @@ const getTodos = (req: Request, res: Response) => {
 };
 
 const getOneTodo = (req: Request, res: Response) => {
-  TodoModels.selectOneTodo(req.params.id)
-    .then((result) => {
+  TodoModels.selectOneTodo(req.params.id).then((result) => {
+    if (result.length === 0) {
+      res
+        .status(500)
+        .json({ message: `There's no todo with ID (${req.params.id})` });
+    } else {
       res.json(result);
+    }
+  });
+};
+
+const createTodo = (req: Request, res: Response) => {
+  TodoModels.insertTodo(req.body as Todo)
+    .then(({ affectedRows, insertId }) => {
+      if (affectedRows === 1) {
+        res.json({
+          message: `A new todo have been created with ID (${insertId}).`,
+        });
+      }
     })
     .catch((err) => {
       throw err;
@@ -24,4 +41,5 @@ const getOneTodo = (req: Request, res: Response) => {
 export const TodoController = {
   getTodos,
   getOneTodo,
+  createTodo,
 };

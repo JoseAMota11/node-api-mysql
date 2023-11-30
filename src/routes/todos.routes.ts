@@ -5,5 +5,6 @@ const route = Router();
 
 route.get('/', TodoController.getTodos);
 route.get('/:id', TodoController.getOneTodo);
+route.post('/', TodoController.createTodo);
 
 export default route;
