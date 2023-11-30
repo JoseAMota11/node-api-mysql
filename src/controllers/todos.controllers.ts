@@ -16,7 +16,7 @@ const getOneTodo = (req: Request, res: Response) => {
   TodoModels.selectOneTodo(req.params.id).then((result) => {
     if (result.length === 0) {
       res
-        .status(500)
+        .status(404)
         .json({ message: `There's no todo with ID (${req.params.id})` });
     } else {
       res.json(result);
@@ -29,7 +29,21 @@ const createTodo = (req: Request, res: Response) => {
     .then(({ affectedRows, insertId }) => {
       if (affectedRows === 1) {
         res.json({
-          message: `A new todo have been created with ID (${insertId}).`,
+          message: `A new todo has been created with ID (${insertId}).`,
+        });
+      }
+    })
+    .catch((err) => {
+      throw err;
+    });
+};
+
+const updateTodo = (req: Request, res: Response) => {
+  TodoModels.updateTodo(req.body as Todo, req.params.id as Todo['id'])
+    .then(({ affectedRows }) => {
+      if (affectedRows === 1) {
+        res.json({
+          message: `A todo with ID (${req.params.id}) has been updated.`,
         });
       }
     })
@@ -42,4 +56,5 @@ export const TodoController = {
   getTodos,
   getOneTodo,
   createTodo,
+  updateTodo,
 };

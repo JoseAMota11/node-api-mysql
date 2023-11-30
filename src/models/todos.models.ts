@@ -25,8 +25,18 @@ const insertTodo = async ({ title, description }: Todo) => {
   return rows as ResultSetHeader;
 };
 
+const updateTodo = async ({ title, description }: Todo, id: Todo['id']) => {
+  const [rows] = await pool.execute(
+    'UPDATE `todos` SET `title` = ?, `description` = ? WHERE id = ?;',
+    [title, description, id]
+  );
+
+  return rows as ResultSetHeader;
+};
+
 export const TodoModels = {
   selectTodos,
   selectOneTodo,
   insertTodo,
+  updateTodo,
 };
