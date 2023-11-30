@@ -11,6 +11,17 @@ const getTodos = (req: Request, res: Response) => {
     });
 };
 
+const getOneTodo = (req: Request, res: Response) => {
+  TodoModels.selectOneTodo(req.params.id)
+    .then((result) => {
+      res.json(result);
+    })
+    .catch((err) => {
+      throw err;
+    });
+};
+
 export const TodoController = {
   getTodos,
+  getOneTodo,
 };
