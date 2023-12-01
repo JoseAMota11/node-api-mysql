@@ -1,6 +1,6 @@
 import { pool } from '../db/todos.db';
 import type { ResultSetHeader } from 'mysql2';
-import type { Todo } from '../types/todo';
+import type { Todo } from '../types/todos';
 
 const selectTodos = async () => {
   const [rows] = await pool.query('SELECT * FROM todos;');

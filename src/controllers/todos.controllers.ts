@@ -1,6 +1,6 @@
 import type { Request, Response } from 'express';
 import { TodoModels } from '../models/todos.models';
-import { Todo } from '../types/todo';
+import { Todo } from '../types/todos';
 
 const getTodos = (_: Request, res: Response) => {
   TodoModels.selectTodos()
