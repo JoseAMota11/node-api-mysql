@@ -101,10 +101,35 @@ const deleteTodo = (req: Request, res: Response) => {
     });
 };
 
+const markAsDoneTodo = (req: Request, res: Response) => {
+  TodoModels.markTodoAsDone(
+    req.params.id as Todo['id'],
+    req.body.done as number
+  )
+    .then((result) => {
+      if (result) {
+        const { affectedRows } = result;
+        if (affectedRows === 1) {
+          res.status(200).end();
+        } else {
+          res.status(404).json({
+            message: `There's no todo with ID (${req.params.id}).`,
+          });
+        }
+      } else {
+        throw new Error('Could not mark TO-DO as completed.');
+      }
+    })
+    .catch((err: Error) => {
+      res.status(500).json({ error: err.message });
+    });
+};
+
 export const TodoController = {
   getTodos,
   getOneTodo,
   createTodo,
   updateTodo,
   deleteTodo,
+  markAsDoneTodo,
 };

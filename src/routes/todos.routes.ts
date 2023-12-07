@@ -9,6 +9,7 @@ route.get('/', TodoController.getTodos);
 route.get('/:id', TodoController.getOneTodo);
 route.post('/', validateTodo, TodoController.createTodo);
 route.put('/:id', validateTodo, TodoController.updateTodo);
+route.put('/done/:id', TodoController.markAsDoneTodo);
 route.delete('/:id', TodoController.deleteTodo);
 
 export default route;

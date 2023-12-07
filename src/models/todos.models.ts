@@ -72,10 +72,26 @@ const deleteTodo = async (id: Todo['id']) => {
   }
 };
 
+const markTodoAsDone = async (id: Todo['id'], done: number) => {
+  try {
+    const [rows] = await pool.execute(
+      'UPDATE `todos` SET `done` = ? WHERE `id` = ?;',
+      [done, id]
+    );
+
+    return rows as ResultSetHeader;
+  } catch (error) {
+    console.error(error);
+  } finally {
+    pool.releaseConnection(await pool.getConnection());
+  }
+};
+
 export const TodoModels = {
   selectTodos,
   selectOneTodo,
   insertTodo,
   updateTodo,
   deleteTodo,
+  markTodoAsDone,
 };
