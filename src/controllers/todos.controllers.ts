@@ -2,18 +2,35 @@ import type { Request, Response } from 'express';
 import { TodoModels } from '../models/todos.models';
 import { Todo } from '../types/todos';
 
-const getTodos = (_: Request, res: Response) => {
-  TodoModels.selectTodos()
-    .then((result) => {
+const getTodos = (req: Request, res: Response) => {
+  const { search } = req.query;
+  if (search) {
+    TodoModels.selectTodosBySearch(search as string).then((result) => {
       if (result) {
-        res.json(result);
+        if (result.length > 0) {
+          res.json(result);
+        } else {
+          res
+            .status(404)
+            .json({ message: "There's no results for this search" });
+        }
       } else {
         throw new Error("Could not get TO-DO's from the database.");
       }
-    })
-    .catch((err: Error) => {
-      res.status(500).json({ error: err.message });
     });
+  } else {
+    TodoModels.selectTodos()
+      .then((result) => {
+        if (result) {
+          res.json(result);
+        } else {
+          throw new Error("Could not get TO-DO's from the database.");
+        }
+      })
+      .catch((err: Error) => {
+        res.status(500).json({ error: err.message });
+      });
+  }
 };
 
 const getOneTodo = (req: Request, res: Response) => {

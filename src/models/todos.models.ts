@@ -4,7 +4,22 @@ import type { Todo } from '../types/todos';
 
 const selectTodos = async () => {
   try {
-    const [rows] = await pool.query('SELECT * FROM todos;');
+    const [rows] = await pool.query('SELECT * FROM `todos`;');
+
+    return rows as Todo[];
+  } catch (error) {
+    console.error(error);
+  } finally {
+    pool.releaseConnection(await pool.getConnection());
+  }
+};
+
+const selectTodosBySearch = async (search: string) => {
+  try {
+    const [rows] = await pool.execute(
+      'SELECT * FROM `todos` WHERE `title` LIKE LOWER(?) OR `description` LIKE LOWER(?);',
+      [`%${search}%`, `%${search}%`]
+    );
 
     return rows as Todo[];
   } catch (error) {
@@ -94,4 +109,5 @@ export const TodoModels = {
   updateTodo,
   deleteTodo,
   markTodoAsDone,
+  selectTodosBySearch,
 };
