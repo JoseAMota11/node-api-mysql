@@ -1,25 +1,30 @@
 import type { Request, Response } from 'express';
 import { TodoModels } from '../models/todos.models';
 import { Todo } from '../types/todos';
+import { Filters } from '../types/filters';
 
 const getTodos = (req: Request, res: Response) => {
-  const { search } = req.query;
+  const { search, orderby, descending_order } = req.query;
+  console.log(orderby);
   if (search) {
-    TodoModels.selectTodosBySearch(search as string).then((result) => {
+    TodoModels.selectTodosBySearch(
+      search as string,
+      { orderby, descending_order } as Filters
+    ).then((result) => {
       if (result) {
         if (result.length > 0) {
           res.json(result);
         } else {
           res
             .status(404)
-            .json({ message: "There's no results for this search" });
+            .json({ message: 'There are no results for this search.' });
         }
       } else {
         throw new Error("Could not get TO-DO's from the database.");
       }
     });
   } else {
-    TodoModels.selectTodos()
+    TodoModels.selectTodos({ orderby, descending_order } as Filters)
       .then((result) => {
         if (result) {
           res.json(result);

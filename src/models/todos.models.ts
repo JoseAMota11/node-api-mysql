@@ -1,10 +1,20 @@
 import { pool } from '../db/todos.db';
 import type { ResultSetHeader } from 'mysql2';
 import type { Todo } from '../types/todos';
+import { Filters } from '../types/filters';
 
-const selectTodos = async () => {
+const selectTodos = async ({
+  orderby = 'created_at',
+  descending_order = 'ASC',
+}: Filters) => {
   try {
-    const [rows] = await pool.query('SELECT * FROM `todos`;');
+    const [rows] = await pool.query(
+      'SELECT * FROM `todos` ORDER BY ' +
+        pool.escapeId(orderby) +
+        ' ' +
+        descending_order +
+        ';'
+    );
 
     return rows as Todo[];
   } catch (error) {
@@ -14,10 +24,17 @@ const selectTodos = async () => {
   }
 };
 
-const selectTodosBySearch = async (search: string) => {
+const selectTodosBySearch = async (
+  search: string,
+  { orderby = 'created_at', descending_order = 'ASC' }: Filters
+) => {
   try {
     const [rows] = await pool.execute(
-      'SELECT * FROM `todos` WHERE `title` LIKE LOWER(?) OR `description` LIKE LOWER(?);',
+      'SELECT * FROM `todos` WHERE `title` LIKE LOWER(?) OR `description` LIKE LOWER(?) ORDER BY ' +
+        pool.escapeId(orderby) +
+        ' ' +
+        descending_order +
+        ';',
       [`%${search}%`, `%${search}%`]
     );
 
