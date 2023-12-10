@@ -5,7 +5,6 @@ import { Filters } from '../types/filters';
 
 const getTodos = (req: Request, res: Response) => {
   const { search, orderby, descending_order } = req.query;
-  console.log(orderby);
   if (search) {
     TodoModels.selectTodosBySearch(
       search as string,

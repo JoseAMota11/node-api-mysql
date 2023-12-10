@@ -1,7 +1,7 @@
 import type { Request, Response, NextFunction } from 'express';
 import { z } from 'zod';
 
-const TodoBody = z.object({
+const TodoSchema = z.object({
   title: z
     .string({
       required_error: 'Title is required',
@@ -21,7 +21,7 @@ export const validateTodo = (
   res: Response,
   next: NextFunction
 ) => {
-  const validationResult = TodoBody.safeParse(req.body);
+  const validationResult = TodoSchema.safeParse(req.body);
 
   if (validationResult.success) {
     next();
@@ -29,6 +29,8 @@ export const validateTodo = (
     const result = validationResult.error.issues.map(({ message, path }) => ({
       [path[0]]: message,
     }));
-    res.status(400).json(result);
+
+    const response = Object.assign({}, ...Object.values(result));
+    res.status(400).json(response);
   }
 };
